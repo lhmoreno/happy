@@ -70,6 +70,8 @@
     background: rgba(255, 255, 255, 0.8);
     border-radius: 20px;
     box-shadow: none;
+
+    transform: translateX(170px) translateY(63px);
 }
 
 #page-map .map-popup .leaflet-popup-content {
@@ -81,7 +83,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-
 }
 
 #page-map .map-popup .leaflet-popup-content a {
@@ -94,6 +95,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#page-map .map-popup .leaflet-popup-content a:hover {
+    background: #17D6EB;
 }
 
 #page-map .map-popup .leaflet-popup-tip-container {

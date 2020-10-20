@@ -40,10 +40,14 @@
     line-height: 34px;
 }
 
-.content-wrapper .location {
-    position: absolute;
-    right: 0;
-    top: 0;
+#page-landing .app-info {
+    display: flex;
+    align-items: center;
+}
+
+#page-landing .content-wrapper .location {
+    margin-left: 60px;
+    min-width: 120px;
     font-size: 24px;
     line-height: 34px;
     display: flex;
@@ -51,11 +55,41 @@
     text-align: right;
 }
 
-.content-wrapper .location strong {
+#page-landing .content-wrapper .location strong {
     font-weight: 800;
 }
 
-.content-wrapper .enter-app {
+#page-landing .content-wrapper .login {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 222px;
+    height: 56px;
+    background: #12D4E0;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+#page-landing .content-wrapper .login span {
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+
+#page-landing .content-wrapper .login:hover {
+    background: #96FEFF;
+}
+
+#page-landing .content-wrapper .login:hover span {
+    color: #15C3D6;
+}
+
+#page-landing .content-wrapper .enter-app {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -69,6 +103,6 @@
     transition: background-color 0.2s;
 }
 
-.content-wrapper .enter-app:hover {
+#page-landing .content-wrapper .enter-app:hover {
     background: #96FEFF;
 }

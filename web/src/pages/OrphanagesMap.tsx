@@ -18,15 +18,24 @@ interface Orphanage {
   name: string;
 }
 
+const initialOrphanages: Orphanage[] = [
+  {
+    id: 1,
+    latitude: -24.112883,
+    longitude: -49.337641,
+    name: 'Primeiro'
+  }
+];
+
 
 function OrphanagesMap() {
-  const [orphanages, setOrphanages] = useState<Orphanage[]>([]);
+  const [orphanages, setOrphanages] = useState<Orphanage[]>(initialOrphanages);
     
-  useEffect(() => {
-    api.get('orphanages').then(response => {
-      setOrphanages(response.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   api.get('orphanages').then(response => {
+  //     setOrphanages(response.data);
+  //   });
+  // }, []);
   
   return (
     <div id="page-map">
@@ -45,7 +54,7 @@ function OrphanagesMap() {
       </aside>
 
       <Map
-        center={[-27.2104339,-49.629111]}
+        center={[-24.111855, -49.333371]}
         zoom={15}
         style={{ width: '100%', height: '100%' }}
       >
@@ -58,7 +67,12 @@ function OrphanagesMap() {
               position={[orphanage.latitude,orphanage.longitude]}
               key={orphanage.id}
             >
-              <Popup closeButton={false} minWidth={240} maxWidth={240} className="map-popup">
+              <Popup 
+                closeButton={false} 
+                minWidth={240} 
+                maxWidth={240} 
+                className="map-popup"
+              >
                 {orphanage.name}
                 <Link to={`/orphanages/${orphanage.id}`}>
                   <FiArrowRight size={20} color="#FFF"/>

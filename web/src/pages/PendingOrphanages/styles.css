@@ -1,0 +1,32 @@
+#page-dashboard {
+  display: flex;
+}
+
+#page-dashboard .container {
+  width: 100%;
+  margin-left: 96px;
+  padding: 48px 96px;
+}
+
+#page-dashboard .container header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #D3E2E5;
+}
+
+#page-dashboard .container header h1 {
+  color: #4D6F80;
+}
+
+#page-dashboard .container header span {
+  color: #8FA7B2;
+}
+
+#page-dashboard .container main.orphanage-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 32px;
+  row-gap: 32px;
+}

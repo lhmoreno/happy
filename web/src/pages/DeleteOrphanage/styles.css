@@ -1,0 +1,72 @@
+#page-delete-register {
+    width: 100vw;
+    height: 100vh;
+    background: #FF669D;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#page-delete-register .content-wrapper {
+    position: relative;
+
+    width: 100%;
+    max-width: 1100px;
+
+    height: 100%;
+    max-height: 680px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#page-delete-register .content-wrapper main {
+    max-width: 400px;
+    max-height: 490px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+#page-delete-register .content-wrapper main h1 {
+    font-size: 76px;
+    font-weight: 900;
+    line-height: 70px;
+}
+
+#page-delete-register .content-wrapper main p {
+    margin-top: 40px;
+    font-size: 24px;
+    line-height: 34px;
+}
+
+#page-delete-register .content-wrapper .buttons-container {
+    margin-top: 64px;
+    display: flex;
+    justify-content: space-between;
+    width: 450px;
+}
+
+#page-delete-register .content-wrapper button {
+    border: 0;
+    cursor: pointer;
+    max-width: 220px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 800;
+    border-radius: 20px;
+    background: #D6487B;
+    width: 240px;
+    padding: 18px 0px;
+}
+
+#page-delete-register .content-wrapper button.cancel:hover {
+    background: rgb(165, 0, 60);
+}
+
+#page-delete-register .content-wrapper button.confirm:hover {
+    background: #3BD689;
+}

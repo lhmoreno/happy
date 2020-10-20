@@ -11,15 +11,21 @@ function Landing() {
   return (
     <div id="page-landing">
       <div className="content-wrapper">
-        <img src={logoImg} alt="happy"/>
+        <div className="app-info">
+          <img src={logoImg} alt="happy"/>
+          <div className="location">
+            <strong>Itararé</strong>
+            <span>São Paulo</span>
+          </div>
+        </div>
         <main>
           <h1>Leve felicidade para o mundo</h1>
           <p>Visite orfanatos e mude o dia de muitas crianças.</p>
         </main>
-        <div className="location">
-          <strong>Itararé</strong>
-          <span>São Paulo</span>
-        </div>
+
+        <Link to="/login" className="login">
+          <span>Acesso restrito</span>
+        </Link>
 
         <Link to="/app" className="enter-app">
           <FiArrowRight size={26} color="rgba(0, 0, 0, 0.6)" />

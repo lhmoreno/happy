@@ -111,10 +111,10 @@ form.login .config-password {
     margin-top: 24px;
 }
 
-form.login .config-password label,
 form.login .config-password span {
     color: #8FA7B3;
     line-height: 24px;
+    cursor: pointer;
 }
 
 form.login .remember-container {
@@ -122,8 +122,20 @@ form.login .remember-container {
     align-items: center;
 }
 
-form.login .remember-container input {
+form.login .remember-container button {
+    outline: none;
+    border: 1px solid #8FA7B3;
     width: 24px;
     height: 24px;
+    border-radius: 8px;
     margin-right: 8px;
+    cursor: pointer;
+    background: #FFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form.login .remember-container button.checked {
+    background: #37C77F;
 }

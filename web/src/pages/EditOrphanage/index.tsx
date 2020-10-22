@@ -14,6 +14,7 @@ function EditOrphanage() {
 
   return (
     <OrphanageForm 
+      onSubmitForm={() => {}}
       orphanage={initialOrphanageData}
     />
   );

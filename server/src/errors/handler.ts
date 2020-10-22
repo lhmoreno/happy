@@ -15,7 +15,13 @@ const errorHandler: ErrorRequestHandler = (error, request, response, next) => {
 
     return response.status(400).json({ message: 'Validation fails', errors });
   }
-  
+
+  if (error.errno === 19) 
+    return response.status(406).json({ error: 'E-mail already registered'});
+
+  if (error.code === 'ERR_HTTP_HEADERS_SENT') 
+    return response.status(401).send();
+
   console.error(error);
   return response.status(500).json({ message: 'Internal server error' });
 };

@@ -3,6 +3,7 @@ import { FiClock, FiInfo, FiArrowRight, FiArrowLeft } from 'react-icons/fi';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
+import { AxiosResponse } from 'axios';
 
 import Sidebar from '../../components/SideBar';
 import mapIcon from '../../utils/mapIcon';
@@ -10,9 +11,7 @@ import mapIcon from '../../utils/mapIcon';
 import api from '../../services/api';
 import { 
   OrphanageDataProps,
-  PreviewImagesProps,
-  initialOrphanageData,
-  initialImagesPreview
+  PreviewImagesProps
 } from '../../utils/apiFake';
 
 import './styles.css';
@@ -23,15 +22,31 @@ interface OrphanageParams {
 
 function Orphanage() {
   const params = useParams<OrphanageParams>();
-  const [orphanage, setOrphanage] = useState<OrphanageDataProps>(initialOrphanageData);
+  const [orphanage, setOrphanage] = useState<OrphanageDataProps>();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [imagesPreview, setImagesPreview] = useState<PreviewImagesProps>(initialImagesPreview);
+  const [imagesPreview, setImagesPreview] = useState<PreviewImagesProps>({
+    image_initial: 0,
+    images: []
+  });
   
-  // useEffect(() => {
-  //   api.get(`orphanages/${params.id}`).then(response => {
-  //     setOrphanage(response.data);
-  //   });
-  // }, [params.id]);
+  useEffect(() => {
+    api.get(`orphanage/${params.id}`).then((response: AxiosResponse<OrphanageDataProps>)=> {
+      setOrphanage(response.data);
+      
+      const newImagesPreview: PreviewImagesProps = {
+        image_initial: 0,
+        images: []
+      };
+      
+      response.data.images.forEach((image, index) => {
+        if (index < 3) {
+          newImagesPreview.images.push(image);
+        }
+      });
+
+      setImagesPreview(newImagesPreview);
+    });
+  }, [params.id]);
 
   if (!orphanage) {
     return <p>Carregando...</p>
@@ -39,7 +54,9 @@ function Orphanage() {
 
   function handleAfterImage() {
     const indexInitial = imagesPreview.image_initial + 1;
-    const newImagesPreview = orphanage.images.slice(indexInitial, indexInitial + 3);
+    const newImagesPreview = orphanage?.images.slice(indexInitial, indexInitial + 3);
+
+    if (!newImagesPreview) return;
 
     setImagesPreview({
       image_initial: indexInitial,
@@ -49,7 +66,9 @@ function Orphanage() {
 
   function handleBeforeImage() {
     const indexInitial = imagesPreview.image_initial -1;
-    const newImagesPreview = orphanage.images.slice(indexInitial, indexInitial + 3);
+    const newImagesPreview = orphanage?.images.slice(indexInitial, indexInitial + 3);
+
+    if (!newImagesPreview) return;
     
     setImagesPreview({
       image_initial: indexInitial,
@@ -102,7 +121,7 @@ function Orphanage() {
                 )
               })}
 
-              {imagesPreview.image_initial + 3 !== orphanage.images.length ? (
+              {imagesPreview.image_initial + 3 < orphanage.images.length ? (
                   <button
                     type="button"
                     className="button-next"
@@ -165,7 +184,9 @@ function Orphanage() {
             <button 
               type="button" 
               className="contact-button"
-              onClick={() => {}}
+              onClick={() => {
+                window.open(`https://api.whatsapp.com/send?phone=${orphanage.whatsapp}`)
+              }}
             >
               <FaWhatsapp size={20} color="#FFF" />
               Entrar em contato

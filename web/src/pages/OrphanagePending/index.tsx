@@ -14,6 +14,7 @@ function OrphanagePending() {
 
   return (
     <OrphanageForm 
+      onSubmitForm={() => {}}
       orphanage={initialOrphanageData}
       orphanagePending
     />

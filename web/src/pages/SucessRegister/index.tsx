@@ -16,7 +16,7 @@ function SucessRegister() {
             ao administrador para ser aprovado.
             Agora é só esperar :)
           </p>
-          <Link to="/app" className="back">
+          <Link to="/map" className="back">
             Voltar para o mapa
           </Link>
         </main>

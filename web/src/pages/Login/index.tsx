@@ -1,14 +1,39 @@
-import React, { useState } from 'react';
-import { FiArrowLeft } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import React, { useState, FormEvent } from 'react';
+import { FiArrowLeft, FiCheck } from 'react-icons/fi';
+import { Link, useHistory } from 'react-router-dom';
+import { AxiosResponse } from 'axios';
 
 import LogoImg from '../../images/logo-login.svg';
+
+import api from '../../services/api';
 
 import './styles.css';
 
 function Login() {
+  const { push } = useHistory();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(false);
+
+  function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    api.post('login', { email, password })
+      .then((res: AxiosResponse<{ token: string }>) => {
+        if (remember) {
+          localStorage.setItem('token', res.data.token);
+          push('dashboard/orphanages');
+        } else {
+          sessionStorage.setItem('token', res.data.token);
+          push('dashboard/orphanages');
+        }
+      })
+      .catch(() => {
+        setPassword('');
+        alert('Email ou senha inválidos');
+      })
+  }
 
   return (
     <div id="page-login">
@@ -21,7 +46,7 @@ function Login() {
           <FiArrowLeft size={26} color="#15C3D6" />
         </Link>
 
-        <form className="login">
+        <form className="login" onSubmit={handleSubmit}>
           <fieldset>
             <legend>Fazer login</legend>
 
@@ -39,6 +64,7 @@ function Login() {
               <label htmlFor="password">Senha</label>
               <input
                 id="password"
+                type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />
@@ -47,11 +73,15 @@ function Login() {
 
           <div className="config-password">
             <div className="remember-container">
-              <input 
-                id="save-password"
-                type="checkbox"
-              />
-              <label htmlFor="save-password">Lembrar-me</label>
+              <button 
+                type="button"
+                className={remember ? 'checked' : ''}
+                onClick={() => setRemember(before => !before)}
+              >
+                <FiCheck size={18} color="#FFF"/>
+              </button>
+
+              <span onClick={() => setRemember(before => !before)} >Lembrar-me</span>
             </div>
             <span>Esqueci minha senha</span>
           </div>

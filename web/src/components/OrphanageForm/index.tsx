@@ -1,6 +1,5 @@
 import React, {
   useState,
-  FormEvent,
   ChangeEvent,
   useRef,
   useCallback,
@@ -14,20 +13,30 @@ import { useHistory } from 'react-router-dom';
 import happyMapIcon from '../../utils/mapIcon';
 import Sidebar from '../../components/SideBar';
 
-import api from '../../services/api';
 import { OrphanageDataProps } from '../../utils/apiFake';
 
 import './styles.css';
 
+export interface FormDataOrphanage {
+  name: string;
+  latitude: number;
+  longitude: number;
+  about: string;
+  whatsapp: string;
+  instructions: string;
+  opening_hours: string;
+  open_on_weekends: boolean;
+  images: File[];
+}
+
 interface OrphanageFormProps {
+  onSubmitForm: ({}: FormDataOrphanage) => void;
   orphanage?: OrphanageDataProps;
   orphanagePending?: boolean;
 }
 
-function OrphanageForm({ orphanage, orphanagePending }: OrphanageFormProps) {
+function OrphanageForm({ orphanage, orphanagePending, onSubmitForm }: OrphanageFormProps) {
   const history = useHistory();
-
-  const [sucess, setSucess] = useState(false);
 
   const [position, setPosition] = useState({ 
     latitude: 0, 
@@ -62,7 +71,7 @@ function OrphanageForm({ orphanage, orphanagePending }: OrphanageFormProps) {
         orphanage.images[2].url
       ]);
     }
-  }, []);
+  }, [orphanage]);
 
   function handleMapClick(event: LeafletMouseEvent) {
     const { lat, lng } = event.latlng;
@@ -79,7 +88,6 @@ function OrphanageForm({ orphanage, orphanagePending }: OrphanageFormProps) {
     }
 
     const selectedImages = Array.from(event.target.files);
-    console.log(selectedImages);
 
     setImages(before => [...before, ...selectedImages]);
 
@@ -115,30 +123,6 @@ function OrphanageForm({ orphanage, orphanagePending }: OrphanageFormProps) {
     setPreviewImages(newPreviewImages);
   }
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-
-    const { latitude, longitude } = position;
-
-    const data = new FormData();
-
-    data.append('name', name);
-    data.append('about', about);
-    data.append('latitude', String(latitude));
-    data.append('longitude', String(longitude));
-    data.append('instructions', instructions);
-    data.append('opening_hours', opening_hours);
-    data.append('open_on_weekends', String(open_on_weekends));
-    images.forEach(image => {
-      data.append('images', image);
-    })
-
-    await api.post('orphanages', data);
-
-    alert('Cadastro realizado com sucesso');
-    history.push('/app');
-  }
-
   const newFileList = useCallback((newImages: File[]) => {
     const list = new DataTransfer();
     for (let file in newImages) {
@@ -148,10 +132,6 @@ function OrphanageForm({ orphanage, orphanagePending }: OrphanageFormProps) {
     imagesRef.current.files = list.files;
   }, []);
 
-  if (sucess) {
-    return <div />
-  }
-
   return (
     <div id="page-create-orphanage">
       <Sidebar />
@@ -159,7 +139,20 @@ function OrphanageForm({ orphanage, orphanagePending }: OrphanageFormProps) {
       <main>
         <form
           className="create-orphanage-form"
-          onSubmit={() => setSucess(true)}
+          onSubmit={(ev) => {
+            ev.preventDefault();
+            onSubmitForm({
+              name,
+              about,
+              instructions,
+              open_on_weekends,
+              opening_hours,
+              whatsapp,
+              images,
+              latitude: position.latitude,
+              longitude: position.longitude
+            })}
+          }
         >
           <fieldset>
             <legend>Dados</legend>

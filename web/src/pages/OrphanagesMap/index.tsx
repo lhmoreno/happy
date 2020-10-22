@@ -7,19 +7,19 @@ import mapIcon from '../../utils/mapIcon';
 import mapMarkerImg from '../../images/map-marker.svg';
 
 import api from '../../services/api';
-import { OrphanagePinProps, initialOrphanagesMap } from '../../utils/apiFake';
+import { OrphanagePinProps } from '../../utils/apiFake';
 
 import 'leaflet/dist/leaflet.css';
 import './styles.css';
 
 function OrphanagesMap() {
-  const [orphanages, setOrphanages] = useState<OrphanagePinProps[]>(initialOrphanagesMap);
+  const [orphanages, setOrphanages] = useState<OrphanagePinProps[]>([]);
     
-  // useEffect(() => {
-  //   api.get('orphanages').then(response => {
-  //     setOrphanages(response.data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    api.get('orphanages').then(response => {
+      setOrphanages(response.data);
+    });
+  }, []);
   
   return (
     <div id="page-map">

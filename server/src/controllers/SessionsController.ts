@@ -26,7 +26,7 @@ export default {
     const { id } = user;
 
     const token = sign({ id }, process.env.PRIVATE_KEY, {
-      expiresIn: 900 // Token esprina em 15 minutos
+      // expiresIn: 900 // Token esprina em 15 minutos
     });
 
     return response.status(200).json({ token });

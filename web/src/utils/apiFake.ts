@@ -6,6 +6,7 @@ export interface OrphanagePinProps {
 }
 
 export interface OrphanageDataProps {
+  id: number;
   latitude: number;
   longitude: number;
   name: string;
@@ -38,6 +39,7 @@ export const initialOrphanagesMap: OrphanagePinProps[] = [
 ];
 
 export const initialOrphanageData: OrphanageDataProps = {
+  id: 25,
   latitude: -24.105356,
   longitude: -49.326778,
   name: 'Primeiro',

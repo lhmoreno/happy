@@ -30,7 +30,7 @@ export interface FormDataOrphanage {
 }
 
 interface OrphanageFormProps {
-  onSubmitForm: ({}: FormDataOrphanage) => void;
+  onSubmitForm: (orphanage: FormDataOrphanage) => void;
   orphanage?: OrphanageDataProps;
   orphanagePending?: boolean;
 }
@@ -65,11 +65,9 @@ function OrphanageForm({ orphanage, orphanagePending, onSubmitForm }: OrphanageF
       setInstructions(orphanage.instructions);
       setOpeningHours(orphanage.opening_hours);
       setOpenOnWeekends(orphanage.open_on_weekends==='true' ? true : false);
-      setPreviewImages([
-        orphanage.images[0].url,
-        orphanage.images[1].url,
-        orphanage.images[2].url
-      ]);
+
+      const newPreviewImages = orphanage.images.map(({ url }) => url);
+      setPreviewImages(newPreviewImages);
     }
   }, [orphanage]);
 
@@ -313,6 +311,7 @@ function OrphanageForm({ orphanage, orphanagePending, onSubmitForm }: OrphanageF
             <button 
               className="delete-button button" 
               type="button"
+              onClick={() => onSubmitForm({} as FormDataOrphanage)}
             >
               Sim
             </button>

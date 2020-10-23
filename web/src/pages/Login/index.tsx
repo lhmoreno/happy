@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useContext } from 'react';
 import { FiArrowLeft, FiCheck } from 'react-icons/fi';
 import { Link, useHistory } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
@@ -6,15 +6,16 @@ import { AxiosResponse } from 'axios';
 import LogoImg from '../../images/logo-login.svg';
 
 import api from '../../services/api';
+import AuthContext from '../../contexts/auth';
 
 import './styles.css';
 
 function Login() {
   const { push } = useHistory();
+  const { setAuth, remember, setRemember } = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(false);
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -23,10 +24,14 @@ function Login() {
       .then((res: AxiosResponse<{ token: string }>) => {
         if (remember) {
           localStorage.setItem('token', res.data.token);
-          push('dashboard/orphanages');
+          localStorage.setItem('remember', 'true');
+          setAuth(true);
+          push('/dashboard/orphanages');
         } else {
           sessionStorage.setItem('token', res.data.token);
-          push('dashboard/orphanages');
+          localStorage.removeItem('remember');
+          setAuth(true);
+          push('/dashboard/orphanages');
         }
       })
       .catch(() => {
@@ -76,12 +81,12 @@ function Login() {
               <button 
                 type="button"
                 className={remember ? 'checked' : ''}
-                onClick={() => setRemember(before => !before)}
+                onClick={() => setRemember(!remember)}
               >
                 <FiCheck size={18} color="#FFF"/>
               </button>
 
-              <span onClick={() => setRemember(before => !before)} >Lembrar-me</span>
+              <span onClick={() => setRemember(!remember)} >Lembrar-me</span>
             </div>
             <span>Esqueci minha senha</span>
           </div>

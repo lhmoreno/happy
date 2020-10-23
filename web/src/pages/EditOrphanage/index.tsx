@@ -1,9 +1,9 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 import OrphanageForm from '../../components/OrphanageForm';
 
-import { initialOrphanageData } from '../../utils/apiFake';
+import { OrphanageDataProps } from '../../utils/apiFake';
 
 interface EditOrphanageParams {
   id: string;
@@ -11,11 +11,12 @@ interface EditOrphanageParams {
 
 function EditOrphanage() {
   const { id } = useParams<EditOrphanageParams>();
+  const { state: orphanage } = useLocation<OrphanageDataProps>();
 
   return (
     <OrphanageForm 
       onSubmitForm={() => {}}
-      orphanage={initialOrphanageData}
+      orphanage={orphanage}
     />
   );
 }

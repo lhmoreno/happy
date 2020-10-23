@@ -1,6 +1,11 @@
-import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-
+import React, { useContext } from 'react';
+import { 
+  BrowserRouter, 
+  Switch, 
+  Route, 
+  Redirect, 
+  RouteProps 
+} from 'react-router-dom';
 
 import Landing from './pages/Landing';
 import OrphanagesMap from './pages/OrphanagesMap';
@@ -13,24 +18,66 @@ import DeleteOrphanage from './pages/DeleteOrphanage';
 import EditOrphanage from './pages/EditOrphanage';
 import OrphanagePending from './pages/OrphanagePending';
 
+import AuthContext from './contexts/auth';
+
 function Routes() {
+  const { auth } = useContext(AuthContext);
+
   return (
     <BrowserRouter>
         <Switch>
           <Route path="/" exact component={Landing} />
           <Route path="/map" component={OrphanagesMap} />
-          <Route path="/login" component={Login} />
           <Route path="/orphanages/create" component={CreateOrphanage} />
           <Route path="/orphanages/:id" component={Orphanage} />
 
-          <Route path="/dashboard/delete/:id" component={DeleteOrphanage} />
-          <Route path="/dashboard/edit/:id" component={EditOrphanage} />
-          <Route path="/dashboard/pending/:id" component={OrphanagePending} />
-          <Route path="/dashboard/orphanages" component={RegisteredOrphanages} />
-          <Route path="/dashboard/pending" component={PendingOrphanages} />
+          <Route path="/login" render={() => !auth ? <Login /> : <Redirect to="/dashboard/orphanages" />} />
+
+          {/* ROTAS PRIVADAS */}
+          <PrivateRoute path="/dashboard/delete/:id">
+            <DeleteOrphanage />
+          </PrivateRoute>
+
+          <PrivateRoute path="/dashboard/edit/:id">
+            <EditOrphanage />
+          </PrivateRoute>
+
+          <PrivateRoute path="/dashboard/pending/:id">
+            <OrphanagePending />
+          </PrivateRoute>
+
+          <PrivateRoute path="/dashboard/orphanages">
+            <RegisteredOrphanages />
+          </PrivateRoute>
+
+          <PrivateRoute path="/dashboard/pending">
+            <PendingOrphanages />
+          </PrivateRoute>
+
+          {/* <Redirect path="/dashboard" to="/login"/>
+          <Redirect path="/" to="/map"/> */}
         </Switch>
     </BrowserRouter>
   );
+}
+
+const PrivateRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
+  const { auth } = useContext(AuthContext);
+
+  return (
+    <Route 
+      {...rest}
+      render={() => {
+        if (auth) {
+          return children
+        } else {
+          return <Redirect
+            to="/login"
+          />
+        }
+      }}
+    />
+  )
 }
 
 export default Routes;

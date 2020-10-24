@@ -31,13 +31,15 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     if (rememberStorage) {
       setRemember(true);
-      setAuth(true);
     }
 
-    const token = sessionStorage.getItem('token');
+    const tokenSession = sessionStorage.getItem('token');
+    const tokenLocal = localStorage.getItem('token');
 
-    if (token) {
+    if (tokenLocal || tokenSession) {
       setAuth(true);
+    } else {
+      setAuth(false);
     }
   }, []);
 

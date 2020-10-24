@@ -8,7 +8,6 @@ import React, {
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
 import { FiPlus, FiX } from 'react-icons/fi';
-import { useHistory } from 'react-router-dom';
 
 import happyMapIcon from '../../utils/mapIcon';
 import Sidebar from '../../components/SideBar';
@@ -27,17 +26,17 @@ export interface FormDataOrphanage {
   opening_hours: string;
   open_on_weekends: boolean;
   images: File[];
+  deleteImages?: string[];
 }
 
 interface OrphanageFormProps {
   onSubmitForm: (orphanage: FormDataOrphanage) => void;
+  onCancelOrphanage?: () => void;
   orphanage?: OrphanageDataProps;
   orphanagePending?: boolean;
 }
 
-function OrphanageForm({ orphanage, orphanagePending, onSubmitForm }: OrphanageFormProps) {
-  const history = useHistory();
-
+function OrphanageForm({ orphanage, orphanagePending, onSubmitForm, onCancelOrphanage }: OrphanageFormProps) {
   const [position, setPosition] = useState({ 
     latitude: 0, 
     longitude: 0
@@ -50,6 +49,7 @@ function OrphanageForm({ orphanage, orphanagePending, onSubmitForm }: OrphanageF
   const [open_on_weekends, setOpenOnWeekends] = useState(true);
   const [images, setImages] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [deleteImages, setDeleteImages] = useState<string[]>([]);
 
   const imagesRef = useRef<any>(null);
 
@@ -64,12 +64,14 @@ function OrphanageForm({ orphanage, orphanagePending, onSubmitForm }: OrphanageF
       setWhatsapp(orphanage.whatsapp);
       setInstructions(orphanage.instructions);
       setOpeningHours(orphanage.opening_hours);
-      setOpenOnWeekends(orphanage.open_on_weekends==='true' ? true : false);
+      setOpenOnWeekends(orphanage.open_on_weekends ? true : false);
 
       const newPreviewImages = orphanage.images.map(({ url }) => url);
       setPreviewImages(newPreviewImages);
     }
   }, [orphanage]);
+
+  useEffect(() => console.log(open_on_weekends), [open_on_weekends])
 
   function handleMapClick(event: LeafletMouseEvent) {
     const { lat, lng } = event.latlng;
@@ -99,6 +101,7 @@ function OrphanageForm({ orphanage, orphanagePending, onSubmitForm }: OrphanageF
   function handleDeleteImage(image: string) {
     const newPreviewImages = [];
     const newImages = [];
+    setDeleteImages(before => [...before, image])
 
     let indexImage = '0';
 
@@ -148,7 +151,8 @@ function OrphanageForm({ orphanage, orphanagePending, onSubmitForm }: OrphanageF
               whatsapp,
               images,
               latitude: position.latitude,
-              longitude: position.longitude
+              longitude: position.longitude,
+              deleteImages
             })}
           }
         >
@@ -304,7 +308,7 @@ function OrphanageForm({ orphanage, orphanagePending, onSubmitForm }: OrphanageF
             <button 
               className="cancel-button button" 
               type="button"
-              onClick={() => history.goBack()}
+              onClick={onCancelOrphanage}
             >
               Não
             </button>

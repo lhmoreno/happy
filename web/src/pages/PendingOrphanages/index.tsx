@@ -32,12 +32,14 @@ function PendingOrphanages() {
 
     api.get('orphanages/pending', { headers: { 'x-access-token': token } })
       .then((res: AxiosResponse<OrphanageAdminProps[]>) => {
-        setOrphanages(res.data);
-      })
-      .catch((err: AxiosError) => {
-        if(err.response?.status === 404) {
+        if (res.data[0]) {
+          setOrphanages(res.data);
+        } else {
           setNotResult(true);
         }
+      })
+      .catch((err: AxiosError) => {
+        
       })
   }, [auth, remember]);
 

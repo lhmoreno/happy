@@ -37,9 +37,29 @@ function OrphanagePending() {
       });
   }
 
+  function cancelOrphanage() {
+    let token: string | null = '';
+
+    if (auth && remember) {
+      token = localStorage.getItem('token');
+    } else {
+      token = sessionStorage.getItem('token');
+    }
+
+    api.delete(`cancel/orphanage/${id}`, 
+    { headers: { 'x-access-token': token } })
+      .then(() => {
+        goBack();
+      })
+      .catch(() => {
+        alert('Ocorreu algum erro!');
+      });
+  }
+
   return (
     <OrphanageForm 
       onSubmitForm={confirmOrphanage}
+      onCancelOrphanage={cancelOrphanage}
       orphanage={orphanage}
       orphanagePending
     />

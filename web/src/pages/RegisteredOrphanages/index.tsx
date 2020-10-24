@@ -16,12 +16,14 @@ function RegisteredOrphanages() {
   useEffect(() => {
     api.get('orphanages')
       .then((res: AxiosResponse<OrphanageDataProps[]>) => {
-        setOrphanages(res.data);
-      })
-      .catch((err: AxiosError) => {
-        if(err.response?.status === 404) {
+        if (res.data[0]) {
+          setOrphanages(res.data);
+        } else {
           setNotResult(true);
         }
+      })
+      .catch((err: AxiosError) => {
+        
       })
   }, []);
 

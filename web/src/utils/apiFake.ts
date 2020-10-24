@@ -13,7 +13,7 @@ export interface OrphanageDataProps {
   about: string;
   instructions: string;
   opening_hours: string;
-  open_on_weekends: string;
+  open_on_weekends: boolean;
   whatsapp: string;
   images: Array<{
     id: number;
@@ -46,7 +46,7 @@ export const initialOrphanageData: OrphanageDataProps = {
   about: 'Descrição.',
   instructions: 'Instruções.',
   opening_hours: 'Das 0h as 0h',
-  open_on_weekends: 'true',
+  open_on_weekends: true,
   whatsapp: '15 9xxxx-xxxx',
   images: [{
     id: 1,

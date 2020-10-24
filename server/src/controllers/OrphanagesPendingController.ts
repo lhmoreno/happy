@@ -16,7 +16,7 @@ export default {
       where: { pending: true }
     });
 
-    if (orphanages.length === 0) return response.status(404).send();
+    if (orphanages.length === 0) return response.json([]);
 
     return response.json(orphanageView.renderMany(orphanages));
   },
@@ -83,6 +83,7 @@ export default {
   },
 
   async update(request: Request, response: Response) {
+    // ADM CONFIRMA O ORFANATO
     const { id } = request.params;
 
     const orphanagesRepository = getRepository(Orphanage);
@@ -99,17 +100,18 @@ export default {
   },
 
   async destroy(request: Request, response: Response) {
+    // ADM RECUSA O ORFANATO
     const { id } = request.params;
 
     const orphanagesRepository = getRepository(Orphanage);
 
     const orphanage = await orphanagesRepository.findOne({
-      where: { id }
+      where: { id, pending: true }
     });
 
     if (!orphanage) return response.status(404).send();
 
-    await orphanagesRepository.delete(orphanage.id);
+    await orphanagesRepository.delete(id);
 
     return response.status(200).send();
   }

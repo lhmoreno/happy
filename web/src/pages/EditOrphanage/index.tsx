@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
-import { useParams, useLocation, useHistory } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
+import { AxiosError, AxiosResponse } from 'axios';
 
 import OrphanageForm, { FormDataOrphanage } from '../../components/OrphanageForm';
 import AuthContext from '../../contexts/auth';
@@ -13,9 +14,33 @@ interface EditOrphanageParams {
 
 function EditOrphanage() {
   const { id } = useParams<EditOrphanageParams>();
-  const { state: orphanage } = useLocation<OrphanageDataProps>();
   const { auth, remember } = useContext(AuthContext);
-  const { goBack } = useHistory();
+  const { goBack, push } = useHistory();
+
+  const [orphanage, setOrphanage] = useState<OrphanageDataProps>();
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    let tokenSave: string = '';
+
+    if (auth && remember) {
+      tokenSave = localStorage.getItem('token') as string;
+    } else {
+      tokenSave = sessionStorage.getItem('token') as string;
+    }
+
+    setToken(tokenSave);
+
+    api.get(`orphanage/${id}`, { headers: { 'x-access-token': tokenSave } })
+      .then((res: AxiosResponse<OrphanageDataProps>) => {
+        setOrphanage(res.data);
+      })
+      .catch((error: AxiosError) => {
+        if (error.response?.status === 404) {
+          push('/dashboard/orphanages')
+        }
+      })
+  }, [id, auth, remember, push]);
 
   async function editOrphanage({ 
     about,
@@ -33,7 +58,7 @@ function EditOrphanage() {
     const deleteImagesArray: string[] = [];
 
     deleteImages?.forEach((urlDelete) => {
-      const image = orphanage.images.find(({ url }) => url === urlDelete);
+      const image = orphanage?.images.find(({ url }) => url === urlDelete);
       deleteImagesArray.push(String(image?.id));
     });
 
@@ -54,14 +79,6 @@ function EditOrphanage() {
     images.forEach(image => {
       data.append('images', image);
     });
-
-    let token: string | null = '';
-
-    if (auth && remember) {
-      token = localStorage.getItem('token');
-    } else {
-      token = sessionStorage.getItem('token');
-    }
 
     await api.put(`edit/orphanage/${id}`, data, 
     { headers: { 'x-access-token': token } })

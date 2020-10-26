@@ -71,8 +71,6 @@ function OrphanageForm({ orphanage, orphanagePending, onSubmitForm, onCancelOrph
     }
   }, [orphanage]);
 
-  useEffect(() => console.log(open_on_weekends), [open_on_weekends])
-
   function handleMapClick(event: LeafletMouseEvent) {
     const { lat, lng } = event.latlng;
 

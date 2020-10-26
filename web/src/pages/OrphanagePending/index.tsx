@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { AxiosError, AxiosResponse } from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 
 import OrphanageForm from '../../components/OrphanageForm';
 import AuthContext from '../../contexts/auth';
@@ -12,21 +13,37 @@ interface OrphanagePendingParams {
 }
 
 function OrphanagePending() {
-  const { goBack } = useHistory();
+  const { goBack, push } = useHistory();
   const { id } = useParams<OrphanagePendingParams>();
-  const { state: orphanage } = useLocation<OrphanageDataProps>();
 
   const { auth, remember } = useContext(AuthContext);
 
-  function confirmOrphanage() {
-    let token: string | null = '';
+  const [orphanage, setOrphanage] = useState<OrphanageDataProps>();
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    let tokenSave: string = '';
 
     if (auth && remember) {
-      token = localStorage.getItem('token');
+      tokenSave = localStorage.getItem('token') as string;
     } else {
-      token = sessionStorage.getItem('token');
+      tokenSave = sessionStorage.getItem('token') as string;
     }
 
+    setToken(tokenSave);
+
+    api.get(`pending/orphanage/${id}`, { headers: { 'x-access-token': tokenSave } })
+      .then((res: AxiosResponse<OrphanageDataProps>) => {
+        setOrphanage(res.data);
+      })
+      .catch((error: AxiosError) => {
+        if (error.response?.status === 404) {
+          push('/dashboard/pending')
+        }
+      })
+  }, [id, auth, remember, push]);
+
+  function confirmOrphanage() {
     api.put(`confirm/orphanage/${id}`, {}, 
     { headers: { 'x-access-token': token } })
       .then(() => {

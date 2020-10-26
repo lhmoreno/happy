@@ -20,6 +20,7 @@ routes.post('/login', SessionsController.create); // Loga um adm
 
 // ROTAS RESTRITAS
 routes.get('/orphanages/pending', SessionsController.show, OrphanagesPendingController.index); // Mostra todos os orfanatos pendentes para o adm
+routes.get('/pending/orphanage/:id', SessionsController.show, OrphanagesPendingController.show); // Mostra detalhe de um orfanato pendente para o adm
 routes.put('/confirm/orphanage/:id', SessionsController.show, OrphanagesPendingController.update); // Adm confirma a criação do orfanato
 routes.delete('/cancel/orphanage/:id', SessionsController.show, OrphanagesPendingController.destroy); // Adm recusa a criação do orfanato
 routes.put('/edit/orphanage/:id', SessionsController.show, upload.array('images'), OrphanagesRegisteredController.update); // Adm edita o orfanato

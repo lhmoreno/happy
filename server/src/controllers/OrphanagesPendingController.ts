@@ -21,6 +21,22 @@ export default {
     return response.json(orphanageView.renderMany(orphanages));
   },
 
+  async show(request: Request, response: Response) {
+    // Busca apenas um orfanato pendente por id para o adm
+    const { id } = request.params;
+    const orphanagesRepository = getRepository(Orphanage);
+
+
+    const orphanage = await orphanagesRepository.findOne({
+      relations: ['images'],
+      where: { id, pending: true }
+    });
+
+    if (!orphanage) return response.status(404).send();
+
+    return response.json(orphanageView.render(orphanage));
+  },
+
   async create(request: Request, response: Response) {
     // Qualquer pessoa cria um orfanato
     const {

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FiArrowLeft, FiPower, FiMapPin, FiInfo } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
 
+import AuthContext from '../../contexts/auth';
 import mapMarkerImg from '../../images/map-marker.svg';
 
 import './styles.css';
@@ -12,7 +13,7 @@ interface SidebarProps {
 }
 
 function Sidebar({ dashboard, buttonActive }: SidebarProps) {
-
+  const { setAuth } = useContext(AuthContext);
   const { goBack, push } = useHistory();
 
   return (
@@ -51,7 +52,11 @@ function Sidebar({ dashboard, buttonActive }: SidebarProps) {
             <FiArrowLeft size={24} color="#FFF" />
           </button>
           ) : (
-            <button type="button" onClick={() => {}}>
+            <button type="button" onClick={() => {
+              localStorage.removeItem('token');
+              sessionStorage.removeItem('token');
+              setAuth(false);
+            }}>
               <FiPower size={24} color="#FFF" />
             </button>
           )

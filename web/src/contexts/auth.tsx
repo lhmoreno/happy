@@ -14,9 +14,23 @@ const AuthContext = createContext<AuthContextProps>({
   setRemember: () => {} 
 });
 
+const rememberStorage = localStorage.getItem('remember');
+const tokenSession = sessionStorage.getItem('token');
+const tokenLocal = localStorage.getItem('token');
+let rememberInitial = false;
+let authInitial = false;
+
+if (rememberStorage) {
+  rememberInitial = true;
+}
+
+if (tokenLocal || tokenSession) {
+  authInitial = true;
+}
+
 export const AuthProvider: React.FC = ({ children }) => {
-  const [auth, setAuth] = useState(false);
-  const [remember, setRemember] = useState(false);
+  const [auth, setAuth] = useState(authInitial);
+  const [remember, setRemember] = useState(rememberInitial);
 
   const handleAuth = useCallback((value: boolean) => {
     setAuth(value);
@@ -27,20 +41,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const rememberStorage = localStorage.getItem('remember');
-
-    if (rememberStorage) {
-      setRemember(true);
-    }
-
-    const tokenSession = sessionStorage.getItem('token');
-    const tokenLocal = localStorage.getItem('token');
-
-    if (tokenLocal || tokenSession) {
-      setAuth(true);
-    } else {
-      setAuth(false);
-    }
+    
   }, []);
 
   return (

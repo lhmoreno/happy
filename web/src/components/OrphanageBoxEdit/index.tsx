@@ -38,7 +38,7 @@ function OrphanageBoxEdit({ pending, orphanage }: OrphanageBoxEditProps) {
         <div className="buttons-container">
           {!pending ? (
             <>
-              <button type="button" onClick={() => push(`/dashboard/edit/${orphanage.id}`, orphanage)}>
+              <button type="button" onClick={() => push(`/dashboard/edit/${orphanage.id}`)}>
                 <FiEdit3 size={24} color="#15C3D6" />
               </button>
 
@@ -47,7 +47,7 @@ function OrphanageBoxEdit({ pending, orphanage }: OrphanageBoxEditProps) {
               </button>
             </>
           ): (
-            <button type="button" onClick={() => push(`/dashboard/pending/${orphanage.id}`, orphanage)}>
+            <button type="button" onClick={() => push(`/dashboard/pending/${orphanage.id}`)}>
               <FiArrowRight size={24} color="#15C3D6" />
             </button>
           )}

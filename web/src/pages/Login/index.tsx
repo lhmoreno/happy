@@ -88,7 +88,7 @@ function Login() {
 
               <span onClick={() => setRemember(!remember)} >Lembrar-me</span>
             </div>
-            <span>Esqueci minha senha</span>
+            <Link to="/forgot">Esqueci minha senha</Link>
           </div>
 
           <button className="confirm-button" type="submit">

@@ -5,6 +5,7 @@ import uploadConfig from './config/upload';
 
 import OrphanagesPendingController from './controllers/OrphanagesPendingController';
 import OrphanagesRegisteredController from './controllers/OrphanagesRegisteredController';
+import PasswordController from './controllers/PasswordController';
 
 import UsersController from './controllers/UsersController';
 import SessionsController from './controllers/SessionsController';
@@ -17,6 +18,7 @@ routes.get('/orphanages', OrphanagesRegisteredController.index); // Busca todos 
 routes.get('/orphanage/:id', OrphanagesRegisteredController.show); // Busca apenas um orfanato cadastrado por id
 routes.post('/create/orphanage', upload.array('images'), OrphanagesPendingController.create); // Cria um orfanato para ser aprovado pelo adm
 routes.post('/login', SessionsController.create); // Loga um adm
+routes.post('/forgot/password', PasswordController.update); // Requisição de uma nova senha
 
 // ROTAS RESTRITAS
 routes.get('/orphanages/pending', SessionsController.show, OrphanagesPendingController.index); // Mostra todos os orfanatos pendentes para o adm
@@ -28,5 +30,6 @@ routes.delete('/delete/orphanage/:id', SessionsController.show, OrphanagesRegist
 
 // ROTAS ESCONDIDAS
 routes.post('/create/user', UsersController.create); // Cria um adm
+routes.post('/reset/password', UsersController.update); // Reseta uma nova senha
 
 export default routes;

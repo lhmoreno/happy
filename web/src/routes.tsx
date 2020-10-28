@@ -12,6 +12,8 @@ import OrphanagesMap from './pages/OrphanagesMap';
 import Orphanage from './pages/Orphanage';
 import CreateOrphanage from './pages/CreateOrphanage';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import RegisteredOrphanages from './pages/RegisteredOrphanages';
 import PendingOrphanages from './pages/PendingOrphanages';
 import DeleteOrphanage from './pages/DeleteOrphanage';
@@ -32,6 +34,8 @@ function Routes() {
           <Route path="/orphanages/:id" component={Orphanage} />
 
           <Route path="/login" render={() => !auth ? <Login /> : <Redirect to="/dashboard/orphanages" />} />
+          <Route path="/forgot" component={ForgotPassword} />
+          <Route path="/reset/:jwt" component={ResetPassword} />
 
           {/* ROTAS PRIVADAS */}
           <PrivateRoute path="/dashboard/delete/:id">

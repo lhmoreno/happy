@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 
 import mapMarker from '../images/map-marker.png';
 
@@ -18,14 +19,28 @@ interface Orphanage {
 }
 
 export default function OrphanagesMap() {
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
   const [orphanages, setOrphanages] = useState<Orphanage[]>([]);
   const navigation = useNavigation();
 
-  useFocusEffect(() => {
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Precisamos de sua localização para uma melhor experiência!');
+      }
+      
+      const { coords } = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = coords;
+      setLocation({ latitude, longitude });
+    })()
+  }, []);
+
+  useFocusEffect(useCallback(() => {
     api.get('/orphanages').then(response => {
       setOrphanages(response.data);
     });
-  });
+  }, []));
 
   function handleNavigateToOrphanageDetails(id: number) {
     navigation.navigate('OrphanageDetails', { id });
@@ -35,14 +50,22 @@ export default function OrphanagesMap() {
     navigation.navigate('SelectMapPosition');
   }
 
+  if (location.latitude === 0) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    )
+  }
+
   return(
     <View style={styles.container}>
       <MapView 
         provider={PROVIDER_GOOGLE}
         style={styles.map} 
         initialRegion={{
-          latitude: -22.9074336,
-          longitude: -43.1809502,
+          latitude: location.latitude,
+          longitude: location.longitude,
           latitudeDelta: 0.008,
           longitudeDelta: 0.008,
         }}

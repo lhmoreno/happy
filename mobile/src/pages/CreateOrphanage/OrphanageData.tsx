@@ -45,7 +45,7 @@ export default function OrphanageData() {
       } as any);
     });
 
-    await api.post('orphanages', data);
+    await api.post('create/orphanage', data);
 
     navigation.navigate('OrphanagesMap');
   }

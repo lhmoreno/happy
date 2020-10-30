@@ -47,7 +47,7 @@ export default function OrphanagesMap() {
   }
 
   function handleNavigateToCreateOrphanage() {
-    navigation.navigate('SelectMapPosition');
+    navigation.navigate('SelectMapPosition', { location });
   }
 
   if (location.latitude === 0) {

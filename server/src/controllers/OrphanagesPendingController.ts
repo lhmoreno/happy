@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+import fs from 'fs';
 import * as Yup from 'yup';
 
 import orphanageView from '../views/orphanages_admin_view';
@@ -122,10 +123,15 @@ export default {
     const orphanagesRepository = getRepository(Orphanage);
 
     const orphanage = await orphanagesRepository.findOne({
+      relations: ['images'],
       where: { id, pending: true }
     });
 
     if (!orphanage) return response.status(404).send();
+
+    orphanage.images.forEach(({ path }) => {
+      fs.unlinkSync(`./uploads/${path}`);
+    });
 
     await orphanagesRepository.delete(id);
 

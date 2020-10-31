@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { ScrollView, View, StyleSheet, Text, TextInput } from 'react-native';
-import { RectButton } from 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, View, StyleSheet, Text, TextInput, Image } from 'react-native';
+import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation, useRoute } from '@react-navigation/native';
+
 import api from '../../services/api';
+import Header from '../../components/Header';
+import successImage from '../../images/success.png';
 
 interface OrphanageDataSecondParams {
   position: {
@@ -19,12 +22,14 @@ export default function OrphanageDataSecond() {
   const [instructions, setInstructions] = useState('');
   const [opening_hours, setOpeningHours] = useState('');
   const [open_on_weekends, setOpenOnWeekends] = useState(true);
+  const [success, setSucces] = useState(false);
+  const [disabled, setDisabled] = useState(true);
 
   const navigation = useNavigation();
   const route = useRoute();
   const params = route.params as OrphanageDataSecondParams;
 
-  async function handleCreateOrphanage() {
+  function handleCreateOrphanage() {
     const { latitude, longitude } = params.position;
     
     const data = new FormData();
@@ -45,69 +50,111 @@ export default function OrphanageDataSecond() {
       } as any);
     });
 
-    console.log(data);
+    api.post('create/orphanage', data)
+      .then(() => {
+        setSucces(true);
+      })
+      .catch(() => {
+        alert('Ocorreu algum erro inesperado!');
+      });
+  }
 
-    // await api.post('create/orphanage', data);
+  useEffect(() => {
+    if (instructions !== '' && opening_hours !== '') {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [instructions, opening_hours]);
 
-    // navigation.navigate('OrphanagesMap');
+  if (success) {
+    return (
+      <View style={styles.succesContainer}>
+        <Image source={successImage} />
+        <Text style={styles.successTitle}>
+          Ebaaa!
+        </Text>
+        <Text style={styles.successMessage}>
+          O cadastro deu certo e foi enviado ao administrador para ser aprovado. Agora é só esperar :)
+        </Text>
+        <RectButton style={styles.successButton} onPress={() => navigation.navigate('OrphanagesMap')}>
+          <Text style={styles.successButtonText}>Ok</Text>
+        </RectButton>
+      </View>
+    );
   }
   
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ padding: 24 }}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Visitação</Text>
-        <View style={styles.pageActiveContainer}>
-          <Text style={styles.inactiveText}>01 - </Text>
-          <Text style={styles.activeText}>02</Text>
+    <>
+      <Header title="Informe os dados" />
+      <ScrollView style={styles.container} contentContainerStyle={{ padding: 24 }}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Visitação</Text>
+          <View style={styles.pageActiveContainer}>
+            <Text style={styles.inactiveText}>01 - </Text>
+            <Text style={styles.activeText}>02</Text>
+          </View>
         </View>
-      </View>
 
-      <Text style={styles.label}>Instruções</Text>
-      <TextInput
-        style={[styles.input, { height: 110 }]}
-        multiline
-        value={instructions}
-        onChangeText={setInstructions}
-      />
+        <Text style={styles.label}>Instruções</Text>
+        <TextInput
+          style={[styles.input, { height: 110 }]}
+          multiline
+          value={instructions}
+          onChangeText={setInstructions}
+        />
 
-      <Text style={styles.label}>Horario de visitas</Text>
-      <TextInput
-        style={styles.input}
-        value={opening_hours}
-        onChangeText={setOpeningHours}
-      />
+        <Text style={styles.label}>Horario de visitas</Text>
+        <TextInput
+          style={styles.input}
+          value={opening_hours}
+          onChangeText={setOpeningHours}
+        />
 
-      <View style={styles.inputWeekends}>
-        <Text style={styles.label}>Atende final de semana?</Text>
-        <View style={styles.switchContainer}>
-          <Text 
-            style={[
-              styles.switchText, 
-              open_on_weekends && styles.activeWeekends,
-              open_on_weekends && { borderTopLeftRadius: 18, borderBottomLeftRadius: 18 }
-            ]}
-            onPress={() => !open_on_weekends && setOpenOnWeekends(true)}
-          >
-            Sim
-          </Text>
+        <View style={styles.inputWeekends}>
+          <Text style={styles.label}>Atende final de semana?</Text>
+          <View style={styles.switchContainer}>
+            <Text 
+              style={[
+                styles.switchText, 
+                open_on_weekends && styles.activeWeekends,
+                open_on_weekends && { 
+                  borderColor: '#A1E9C5',
+                  color: '#39CC83',
+                  backgroundColor: '#EDFFF6',
+                  borderTopLeftRadius: 18, 
+                  borderBottomLeftRadius: 18 
+                }
+              ]}
+              onPress={() => !open_on_weekends && setOpenOnWeekends(true)}
+            >
+              Sim
+            </Text>
 
-          <Text 
-            style={[
-              styles.switchText,
-              !open_on_weekends && styles.activeWeekends,
-              !open_on_weekends && { borderTopRightRadius: 18, borderBottomRightRadius: 18 }
-            ]}
-            onPress={() => open_on_weekends && setOpenOnWeekends(false)}
-          >
-            Não
-          </Text>
+            <Text 
+              style={[
+                styles.switchText,
+                !open_on_weekends && styles.activeWeekends,
+                !open_on_weekends && { 
+                  borderColor: '#ECB4B7',
+                  color: '#FF669D',
+                  backgroundColor: '#FBF0F4',
+                  borderTopRightRadius: 18, 
+                  borderBottomRightRadius: 18 
+                }
+              ]}
+              onPress={() => open_on_weekends && setOpenOnWeekends(false)}
+            >
+              Não
+            </Text>
+          </View>
         </View>
-      </View>
 
-      <RectButton style={styles.nextButton} onPress={handleCreateOrphanage}>
-        <Text style={styles.nextButtonText}>Confirmar</Text>
-      </RectButton>
-    </ScrollView>
+        <RectButton style={styles.nextButton} onPress={handleCreateOrphanage}>
+          <Text style={styles.nextButtonText}>Confirmar</Text>
+        </RectButton>
+      </ScrollView>
+    </>
   )
 }
 
@@ -200,8 +247,7 @@ const styles = StyleSheet.create({
   },
 
   activeWeekends: {
-    borderWidth: 5,
-    borderColor: '#A1E9C5'
+    borderWidth: 2,
   },
 
   nextButton: {
@@ -217,5 +263,44 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito_800ExtraBold',
     fontSize: 16,
     color: '#FFF',
-  }
+  },
+
+  succesContainer: {
+    height: '100%',
+    backgroundColor: '#39CC83',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20
+  },
+
+  successTitle: {
+    marginTop: 8,
+    fontSize: 40,
+    color: '#FFF',
+    fontFamily: 'Nunito_800ExtraBold',
+  },
+
+  successMessage: {
+    marginTop: 8,
+    fontSize: 20,
+    color: '#FFF',
+    fontFamily: 'Nunito_600SemiBold',
+    textAlign: 'center'
+  },
+
+  successButton: {
+    width: 120,
+    backgroundColor: '#19C06D',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 56,
+    marginTop: 32,
+  },
+
+  successButtonText: {
+    fontFamily: 'Nunito_800ExtraBold',
+    fontSize: 16,
+    color: '#FFF',
+  },
 });

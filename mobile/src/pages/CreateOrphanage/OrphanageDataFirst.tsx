@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
@@ -18,6 +18,7 @@ export default function OrphanageDataFirst() {
   const [about, setAbout] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [images, setImages] = useState<string[]>([]);
+  const [disabled, setDisabled] = useState(true);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -47,8 +48,6 @@ export default function OrphanageDataFirst() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
 
-    console.log(result);
-
     if (result.cancelled) {
       return;
     }
@@ -57,6 +56,14 @@ export default function OrphanageDataFirst() {
 
     setImages([...images, image]);
   }
+
+  useEffect(() => {
+    if (name !== '' && about !== '' && whatsapp !== '' && images.length !== 0) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [name, about, whatsapp, images]);
   
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 24 }}>
@@ -123,13 +130,19 @@ export default function OrphanageDataFirst() {
         })}
       </View>
 
-      <TouchableOpacity style={styles.imagesInput} onPress={() => handleSelectImages(null)}>
+      <TouchableOpacity 
+        style={styles.imagesInput} 
+        onPress={() => handleSelectImages(null)}
+      >
         <Feather name="plus" size={24} color="#15B6D6" />
       </TouchableOpacity>
 
       <RectButton 
-        style={styles.nextButton} 
-        onPress={() => navigation.navigate('OrphanageDataSecond', {
+        style={[
+          styles.nextButton, 
+          disabled && { opacity: 0.5 }
+        ]} 
+        onPress={() => !disabled && navigation.navigate('OrphanageDataSecond', {
           position: params.position,
           name,
           about,

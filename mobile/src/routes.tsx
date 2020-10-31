@@ -76,10 +76,6 @@ export default function Routes(){
         <Screen 
           name="OrphanageDataSecond" 
           component={OrphanageDataSecond} 
-          options={{
-            headerShown: true,
-            header: () => <Header title="Informe os dados" />
-          }}
         />
 
         {onboarding && (

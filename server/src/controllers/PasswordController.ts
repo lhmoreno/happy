@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import * as Yup from 'yup';
-import { createTransport, SendMailOptions } from 'nodemailer';
+// import { createTransport } from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import { sign } from 'jsonwebtoken';
 
 import User from '../models/User';
@@ -10,17 +11,21 @@ declare const process: {
   env: {
     FORGOT_PASSWORD: string;
     BASE_URL_FRONTEND: string;
+    SENDGRID_KEY: string;
+    EMAIL_SENDGRID_FROM: string;
   }
 }
 
-const shippingEmail = createTransport({
-  host: "smtp.mailtrap.io",
-  port: 2525,
-  auth: {
-    user: "c5878c49bd0aa0",
-    pass: "023fd69808f13b"
-  }
-});
+// const shippingEmail = createTransport({
+//   host: "smtp.mailtrap.io",
+//   port: 2525,
+//   auth: {
+//     user: "",
+//     pass: ""
+//   }
+// });
+
+sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 export default {
 
@@ -45,10 +50,11 @@ export default {
     if (user) {
       const token = sign({ id: user.id }, process.env.FORGOT_PASSWORD, { expiresIn: 900 });
 
-      const receivingEmail: SendMailOptions = {
-        from: 'bot@happy.com',
+      const receivingEmail = {
         to: email,
-        subject: 'Primeiro email com nodemailer',
+        from: process.env.EMAIL_SENDGRID_FROM,
+        subject: 'Recuperação de senha',
+        text: 'Esqueceu sua senha?',
         html: `
           <h1>Happy</h1>
           <p>
@@ -64,9 +70,19 @@ export default {
         `
       }
 
-      const envMail = await shippingEmail.sendMail(receivingEmail);
+      // const envMail = await shippingEmail.sendMail(receivingEmail);
+
+      try {
+        await sgMail.send(receivingEmail);
+      } catch(error) {
+        console.log(error);
+
+        if (error.response) {
+          console.error(error.response.body);
+        }
+      }
     }
     
-    return response.status(200).json(user);
+    return response.status(200).send();
   }
 }

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Image, View, ScrollView, Text, StyleSheet, Dimensions, TouchableOpacity, Linking } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { useRoute } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 
 import mapMarkerImg from '../images/map-marker.png';
 
 import api from '../services/api';
+import { RectButton } from 'react-native-gesture-handler';
 
 interface OrphanageDetailsRouteParams {
   id: number;
@@ -15,6 +16,7 @@ interface OrphanageDetailsRouteParams {
 interface Orphanage {
   id: number;
   name: string;
+  whatsapp: string;
   latitude: number;
   longitude: number;
   about: string;
@@ -124,10 +126,10 @@ export default function OrphanageDetails() {
 
         </View>
 
-        {/* <RectButton style={styles.contactButton} onPress={() => {}}>
+        <RectButton style={styles.contactButton} onPress={() => Linking.openURL(`whatsapp://send?phone=${orphanage.whatsapp}`)}>
           <FontAwesome name="whatsapp" size={24} color="#FFF" />
           <Text style={styles.contactButtonText}>Entrar em contato</Text>
-        </RectButton> */}
+        </RectButton>
       </View>
     </ScrollView>
   )

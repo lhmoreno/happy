@@ -18,7 +18,7 @@ npm install
 
 1) Crie o database da aplicação:
 ```
-npm typeorm migration:run
+npm run typeorm migration:run
 ```
 2) Na pasta principal do servidor, crie um arquivo **.env** para setar as váriaveis ambientes:
 ```
